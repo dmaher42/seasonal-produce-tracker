@@ -7,9 +7,7 @@
     <meta name="description" content="Track seasonal produce and plan your meals.">
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
-    <!-- Apple Touch Icon -->
     <link rel="apple-touch-icon" href="icon.png">
-    <!-- Theme Color for Mobile Browsers -->
     <meta name="theme-color" content="#2c3e50">
 </head>
 <body>
@@ -20,11 +18,16 @@
     </header>
 
     <main>
-        <!-- Screen 1: Seasonal Guide -->
+        <!-- Screen 1: Produce Guide -->
         <section id="screen1" class="screen active">
-            <h2>What's In Season?</h2>
+            <h2>Produce Guide</h2>
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="seasonal">In Season</button>
+                <button class="filter-btn" data-filter="pantry">Pantry Staples</button>
+            </div>
             <p><em>Adelaide Hills, Late Spring</em></p>
-            <div id="seasonal-list" class="produce-list">
+            <div id="produce-list" class="produce-list">
                 <!-- List will be populated by JavaScript -->
             </div>
         </section>
@@ -56,7 +59,7 @@
     </main>
 
     <nav>
-        <button class="nav-button active" data-screen="screen1">Seasonal</button>
+        <button class="nav-button active" data-screen="screen1">Produce</button>
         <button class="nav-button" data-screen="screen2">Log & Fridge</button>
         <button class="nav-button" data-screen="screen3">Meal Plan</button>
     </nav>
