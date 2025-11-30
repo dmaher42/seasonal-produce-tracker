@@ -1,12 +1,15 @@
 :root {
-    --primary-color: #2c3e50;
-    --secondary-color: #3498db;
-    --background-color: #f4f7f6;
+    --primary-color: #1a2b3d;
+    --secondary-color: #e67e22;
+    --accent-color: #3498db;
+    --background-color: #f7f9fc;
     --card-background: #ffffff;
-    --text-color: #333;
-    --border-color: #ddd;
+    --text-color: #2c3e50;
+    --muted-text-color: #7f8c8d;
+    --border-color: #e1e8ed;
     --success-color: #27ae60;
-    --light-gray: #f0f0f0;
+    --shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    --font-family: 'Poppins', sans-serif;
 }
 
 * {
@@ -16,7 +19,7 @@
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-family: var(--font-family);
     background-color: var(--background-color);
     color: var(--text-color);
     line-height: 1.6;
@@ -30,18 +33,24 @@ header {
     color: white;
     padding: 1.5rem;
     text-align: center;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: var(--shadow);
 }
 
 header h1 {
     font-size: 2rem;
+    font-weight: 700;
     margin-bottom: 0.25rem;
+}
+
+header p {
+    font-weight: 400;
+    opacity: 0.9;
 }
 
 main {
     flex: 1;
-    padding: 1rem;
-    padding-bottom: 80px; /* Space for nav bar */
+    padding: 1.5rem;
+    padding-bottom: 100px; /* Space for nav bar */
 }
 
 .screen {
@@ -52,53 +61,101 @@ main {
     display: block;
 }
 
+h2 {
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--primary-color);
+}
+
+/* Buttons */
+.primary-btn {
+    background-color: var(--secondary-color);
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    width: 100%;
+    margin-top: 1.5rem;
+    box-shadow: 0 4px 10px rgba(230, 126, 34, 0.3);
+}
+
+.primary-btn:hover {
+    background-color: #d35400;
+    transform: translateY(-2px);
+}
+
+.primary-btn:active {
+    transform: translateY(0);
+}
+
+/* Card Component */
+.card {
+    background-color: var(--card-background);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    margin-bottom: 1.5rem;
+}
+
+.card h3 {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--primary-color);
+}
+
 /* Filter Buttons */
 .filter-buttons {
     display: flex;
     justify-content: center;
     gap: 0.5rem;
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
 }
 
 .filter-btn {
-    background-color: #e0e0e0;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 15px;
+    background-color: var(--card-background);
+    border: 1px solid var(--border-color);
+    padding: 0.5rem 1.25rem;
+    border-radius: 50px;
     cursor: pointer;
     font-size: 0.9rem;
-    transition: background-color 0.2s, color 0.2s;
+    font-weight: 500;
+    transition: all 0.2s;
 }
 
 .filter-btn.active {
-    background-color: var(--secondary-color);
+    background-color: var(--primary-color);
     color: white;
+    border-color: var(--primary-color);
 }
 
-/* --- NEW GROUPED LIST STYLES --- */
+/* Grouped List */
 .produce-list {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 1rem;
 }
 
 .produce-group {
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    overflow: hidden; /* Contains the rounded corners */
+    background-color: var(--card-background);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
 }
 
 .group-header {
     background-color: var(--card-background);
-    padding: 0.75rem 1rem;
-    font-weight: bold;
+    padding: 1rem 1.5rem;
+    font-weight: 600;
     font-size: 1.1rem;
     color: var(--primary-color);
     cursor: pointer;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid var(--border-color);
 }
 
 .group-header .arrow {
@@ -110,135 +167,207 @@ main {
 }
 
 .produce-group .group-items {
-    max-height: 1000px; /* A large value to allow transition */
+    max-height: 1000px;
     transition: max-height 0.3s ease-in-out, padding 0.3s ease-in-out;
-    padding: 0.5rem;
-    background-color: #fdfdfd;
+    padding: 0.5rem 1.5rem 1rem;
 }
 
 .produce-group.collapsed .group-items {
     max-height: 0;
-    padding: 0 0.5rem;
+    padding: 0 1.5rem;
     overflow: hidden;
 }
 
 .produce-item {
-    /* --- NEW COMPACT ITEM STYLE --- */
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0.75rem 0.5rem;
-    border-bottom: 1px solid var(--light-gray);
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--border-color);
 }
 
 .produce-item:last-child {
     border-bottom: none;
 }
 
-.produce-item .info {
-    flex-grow: 1;
-    padding-left: 0.5rem;
-}
-
-.produce-item h3 {
+.produce-item .info h3 {
     font-size: 1rem;
-    margin-bottom: 0.1rem;
-    color: var(--text-color);
-}
-
-.produce-item p {
-    font-size: 0.8rem;
-    color: #777;
-    display: none; /* Hide tips by default for a cleaner look */
+    font-weight: 500;
+    margin-bottom: 0;
 }
 
 .produce-item .actions {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    flex-shrink: 0; /* Prevents actions from shrinking */
+    gap: 1rem;
 }
 
 .produce-item input[type="checkbox"] {
-    width: 1.2rem;
-    height: 1.2rem;
+    width: 1.25rem;
+    height: 1.25rem;
     cursor: pointer;
+    accent-color: var(--secondary-color);
 }
 
 .produce-item button {
     background: none;
     border: none;
-    font-size: 1.2rem;
+    font-size: 1.25rem;
     cursor: pointer;
-    color: var(--secondary-color);
+    color: var(--accent-color);
     padding: 0.25rem;
+    transition: color 0.2s;
 }
 
-/* --- END NEW STYLES --- */
-
+.produce-item button:hover {
+    color: var(--secondary-color);
+}
 
 /* Tabs */
 .tabs {
     display: flex;
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
     border-bottom: 2px solid var(--border-color);
 }
 
-.tab-button {
+.tab-button, .plan-tab-button {
     background: none;
     border: none;
     padding: 0.75rem 1rem;
     font-size: 1rem;
+    font-weight: 500;
     cursor: pointer;
+    color: var(--muted-text-color);
     border-bottom: 3px solid transparent;
     flex-grow: 1;
+    transition: color 0.2s, border-color 0.2s;
 }
 
-.tab-button.active {
-    border-bottom-color: var(--secondary-color);
+.tab-button.active, .plan-tab-button.active {
     color: var(--secondary-color);
-    font-weight: bold;
+    border-bottom-color: var(--secondary-color);
 }
 
 .tab-content {
     display: none;
 }
 .tab-content.active {
-    display: grid;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
 }
 
-/* Meal Planner Screen */
-.output-box {
+/* Meal Plan Screen */
+.plan-content {
     background-color: var(--card-background);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    padding: 1rem;
-    margin-top: 1rem;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
 }
 
-#meal-plan-output {
-    white-space: pre-wrap;
-    word-wrap: break-word;
-    min-height: 100px;
-    background-color: #f9f9f9;
-    padding: 1rem;
-    border-radius: 4px;
+.meal-day {
+    display: none;
+}
+
+.meal-day.active {
+    display: block;
+}
+
+.meal-item {
+    border-bottom: 1px solid var(--border-color);
+    padding: 1rem 0;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.meal-item:last-child {
+    border-bottom: none;
+}
+
+.meal-item:hover {
+    background-color: var(--background-color);
+    margin: 0 -1.5rem;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+}
+
+.meal-item h4 {
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.placeholder-text {
+    text-align: center;
+    color: var(--muted-text-color);
+    padding: 2rem;
+}
+
+/* Modals */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.5);
+    animation: fadeIn 0.3s;
+}
+
+.modal-content {
+    background-color: var(--card-background);
+    margin: 10% auto;
+    padding: 2rem;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 5px 25px rgba(0,0,0,0.2);
+    animation: slideIn 0.3s;
+    position: relative;
+}
+
+.close-btn {
+    color: var(--muted-text-color);
+    position: absolute;
+    top: 1rem;
+    right: 1.5rem;
+    font-size: 2rem;
+    font-weight: 300;
+    cursor: pointer;
+}
+
+.modal h3 {
     margin-bottom: 1rem;
 }
 
-#copy-button {
-    background-color: var(--success-color);
-    color: white;
-    border: none;
-    padding: 0.75rem 1.5rem;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1rem;
-    width: 100%;
+.modal-subtext {
+    font-size: 0.9rem;
+    color: var(--muted-text-color);
+    margin-top: 1rem;
+    text-align: center;
 }
 
-#copy-button:active {
-    background-color: #229954;
+.output-box {
+    background-color: var(--background-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1rem 0;
+}
+
+#modal-output-text {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.9rem;
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+#modal-copy-btn {
+    width: 100%;
 }
 
 /* Navigation Bar */
@@ -252,27 +381,46 @@ nav {
     display: flex;
     justify-content: space-around;
     padding: 0.5rem 0;
-    box-shadow: 0 -2px 5px rgba(0,0,0,0.05);
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
 }
 
 .nav-button {
     background: none;
     border: none;
-    font-size: 0.8rem;
-    color: #888;
+    color: var(--muted-text-color);
     cursor: pointer;
     padding: 0.5rem;
     transition: color 0.2s;
+    font-size: 0.75rem;
+    font-weight: 500;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.nav-button .nav-icon {
+    font-size: 1.25rem;
 }
 
 .nav-button.active {
     color: var(--secondary-color);
-    font-weight: bold;
 }
 
 footer {
     text-align: center;
     padding: 0.5rem;
     font-size: 0.8rem;
-    color: #666;
+    color: var(--muted-text-color);
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideIn {
+    from { transform: translateY(-50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
 }
