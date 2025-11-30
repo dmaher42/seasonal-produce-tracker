@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Seasonal Fresh Produce Tracker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.4;
+    }
+    body {
+      margin: 0;
+      padding: 1rem;
+      background: #f5f7fa;
+      color: #222;
+    }
+    h1, h2, h3 {
+      margin: 0 0 0.5rem;
+    }
+    h1 {
+      font-size: 1.4rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+      margin-top: 1rem;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 1rem;
+    }
+    @media (min-width: 900px) {
+      .grid-2 {
+        grid-template-columns: 2fr 3fr;
+      }
+      .grid-3 {
+        grid-template-columns: 1.2fr 1.6fr 1.6fr;
+      }
+    }
+    .card {
+      background: #fff;
+      border-radius: 0.6rem;
+      padding: 0.9rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      border: 1px solid #e2e6ee;
+    }
+    label {
+      display: block;
+      font-size: 0.8rem;
+      margin-bottom: 0.15rem;
+      font-weight: 600;
+    }
+    input[type="text"],
+    input[type="number"],
+    select,
+    textarea {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 0.35rem 0.4rem;
+      border-radius: 0.4rem;
+      border: 1px solid #cfd5e3;
+      font-size: 0.85rem;
+    }
+    textarea {
+      min-height: 50px;
+      resize: vertical;
+    }
+    .row {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .row > div {
+      flex: 1;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.35rem 0.8rem;
+      border-radius: 0.5rem;
+      border: none;
+      font-size: 0.85rem;
+      cursor: pointer;
+      background: #2563eb;
+      color: white;
+      font-weight: 600;
+      margin-top: 0.35rem;
+    }
+    .btn.secondary {
+      background: #e5e7eb;
+      color: #111827;
+    }
+    .btn.sm {
+      padding: 0.2rem 0.55rem;
+      font-size: 0.75rem;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.1rem 0.45rem;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+    .pill.fruit { background: #fee2e2; color: #991b1b; }
+    .pill.veg { background: #dcfce7; color: #166534; }
+    .pill.special { background: #e0f2fe; color: #1d4ed8; }
+    .pill.new-season { background: #fef3c7; color: #92400e; }
+    .muted {
+      font-size: 0.75rem;
+      color: #6b7280;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+    }
+    th, td {
+      padding: 0.25rem 0.3rem;
+      border-bottom: 1px solid #e5e7eb;
+      text-align: left;
+    }
+    th {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #6b7280;
+    }
+    .tag {
+      font-size: 0.7rem;
+      padding: 0.05rem 0.3rem;
+      border-radius: 0.4rem;
+      background: #eef2ff;
+      color: #4338ca;
+      margin-left: 0.25rem;
+    }
+    .badge {
+      font-size: 0.7rem;
+      padding: 0.05rem 0.3rem;
+      border-radius: 0.4rem;
+      background: #e5e7eb;
+    }
+    .flex-between {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .small-input {
+      max-width: 100px;
+    }
+  </style>
+</head>
+<body>
+  <header class="card">
+    <div class="flex-between">
+      <div>
+        <h1>Seasonal Fresh Produce Tracker</h1>
+        <p class="muted">
+          Track fruits, vegetables, and seasonal specials, plus how fresh they are at each store.
+        </p>
+      </div>
+      <div>
+        <label for="monthSelect">View season for month</label>
+        <div class="row">
+          <select id="monthSelect"></select>
+          <button class="btn sm secondary" id="useCurrentMonthBtn">This month</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="grid grid-3" style="margin-top: 1rem;">
+    <!-- In season list -->
+    <section class="card">
+      <h2>In Season</h2>
+      <p class="muted" id="currentMonthLabel"></p>
+      <div id="inSeasonList"></div>
+    </section>
+
+    <!-- Season items editor -->
+    <section class="card">
+      <h2>Season List (Fruits, Veg, Specials)</h2>
+      <p class="muted">Add or edit what’s in season when. This drives the “In Season” list.</p>
+
+      <form id="itemForm">
+        <div class="row">
+          <div>
+            <label for="itemName">Name</label>
+            <input id="itemName" type="text" placeholder="Strawberries" required />
+          </div>
+          <div>
+            <label for="itemCategory">Category</label>
+            <select id="itemCategory" required>
+              <option value="fruit">Fruit</option>
+              <option value="veg">Vegetable</option>
+              <option value="special">Seasonal special</option>
+            </select>
+          </div>
+        </div>
+        <div class="row">
+          <div>
+            <label for="itemStartMonth">Season start</label>
+            <select id="itemStartMonth" required></select>
+          </div>
+          <div>
+            <label for="itemEndMonth">Season end</label>
+            <select id="itemEndMonth" required></select>
+          </div>
+        </div>
+        <label for="itemNotes">Notes (optional)</label>
+        <textarea id="itemNotes" placeholder="E.g. Best at start of season, needs to smell fragrant."></textarea>
+        <button class="btn" type="submit">Add / Update Item</button>
+        <button class="btn secondary sm" type="button" id="resetItemForm">Clear form</button>
+      </form>
+
+      <h3 style="margin-top:0.8rem;">All items</h3>
+      <div id="itemsTableWrapper" class="muted"></div>
+    </section>
+
+    <!-- Purchases / store freshness -->
+    <section class="card">
+      <h2>Log a Purchase</h2>
+      <form id="purchaseForm">
+        <div class="row">
+          <div>
+            <label for="purchaseDate">Date</label>
+            <input id="purchaseDate" type="date" required />
+          </div>
+          <div>
+            <label for="purchaseStore">Store</label>
+            <input id="purchaseStore" type="text" placeholder="Local fruit shop" required />
+          </div>
+        </div>
+        <div class="row">
+          <div>
+            <label for="purchaseItem">Item</label>
+            <select id="purchaseItem" required></select>
+          </div>
+          <div>
+            <label for="purchaseFreshness">Freshness (1–5)</label>
+            <input id="purchaseFreshness" class="small-input" type="number" min="1" max="5" value="4" required />
+          </div>
+          <div>
+            <label for="purchasePrice">Price per kg (optional)</label>
+            <input id="purchasePrice" class="small-input" type="number" step="0.01" min="0" />
+          </div>
+        </div>
+        <div style="margin-top:0.25rem;">
+          <label>
+            <input type="checkbox" id="purchaseNewSeason" />
+            New season (first good batch at this store)
+          </label>
+        </div>
+        <label for="purchaseNotes">Notes (optional)</label>
+        <textarea id="purchaseNotes" placeholder="E.g. Very sweet, crisp, great smell."></textarea>
+        <button class="btn" type="submit">Save purchase</button>
+      </form>
+
+      <h3 style="margin-top:0.8rem;">Filter history</h3>
+      <div class="row">
+        <div>
+          <label for="filterStore">Store</label>
+          <select id="filterStore">
+            <option value="">All stores</option>
+          </select>
+        </div>
+        <div>
+          <label for="filterItem">Item</label>
+          <select id="filterItem">
+            <option value="">All items</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="purchasesTableWrapper" style="margin-top:0.5rem;"></div>
+    </section>
+  </main>
+
+  <script>
+    const STORAGE_KEY = "seasonFreshTracker_v1";
+
+    function loadData() {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        try {
+          return JSON.parse(raw);
+        } catch {
+          // fall through
+        }
+      }
+      // Default seed data (rough, you can edit in the UI)
+      return {
+        items: [
+          { id: "apples", name: "Apples", category: "fruit", startMonth: 3, endMonth: 8, notes: "Crisp autumn/winter apples." },
+          { id: "strawberries", name: "Strawberries", category: "fruit", startMonth: 9, endMonth: 1, notes: "Best early summer." },
+          { id: "broccoli", name: "Broccoli", category: "veg", startMonth: 4, endMonth: 10, notes: "" },
+          { id: "tomatoes", name: "Tomatoes", category: "veg", startMonth: 11, endMonth: 3, notes: "Great in peak summer." },
+          { id: "mango_special", name: "Mango tray special", category: "special", startMonth: 11, endMonth: 2, notes: "Often new season specials around late spring." }
+        ],
+        purchases: []
+      };
+    }
+
+    function saveData() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    }
+
+    function monthName(m) {
+      const names = ["January","February","March","April","May","June","July",
+                     "August","September","October","November","December"];
+      return names[m - 1];
+    }
+
+    function isInSeason(month, start, end) {
+      // Handles wrap around (e.g. Nov–Feb)
+      if (start <= end) {
+        return month >= start && month <= end;
+      }
+      return month >= start || month <= end;
+    }
+
+    let data = loadData();
+    let editingItemId = null;
+
+    // DOM references
+    const monthSelect = document.getElementById("monthSelect");
+    const useCurrentMonthBtn = document.getElementById("useCurrentMonthBtn");
+    const currentMonthLabel = document.getElementById("currentMonthLabel");
+    const inSeasonList = document.getElementById("inSeasonList");
+
+    const itemForm = document.getElementById("itemForm");
+    const itemNameInput = document.getElementById("itemName");
+    const itemCategoryInput = document.getElementById("itemCategory");
+    const itemStartMonthInput = document.getElementById("itemStartMonth");
+    const itemEndMonthInput = document.getElementById("itemEndMonth");
+    const itemNotesInput = document.getElementById("itemNotes");
+    const resetItemFormBtn = document.getElementById("resetItemForm");
+    const itemsTableWrapper = document.getElementById("itemsTableWrapper");
+
+    const purchaseForm = document.getElementById("purchaseForm");
+    const purchaseDateInput = document.getElementById("purchaseDate");
+    const purchaseStoreInput = document.getElementById("purchaseStore");
+    const purchaseItemSelect = document.getElementById("purchaseItem");
+    const purchaseFreshnessInput = document.getElementById("purchaseFreshness");
+    const purchasePriceInput = document.getElementById("purchasePrice");
+    const purchaseNewSeasonInput = document.getElementById("purchaseNewSeason");
+    const purchaseNotesInput = document.getElementById("purchaseNotes");
+    const filterStoreSelect = document.getElementById("filterStore");
+    const filterItemSelect = document.getElementById("filterItem");
+    const purchasesTableWrapper = document.getElementById("purchasesTableWrapper");
+
+    function initMonthSelects() {
+      for (let m = 1; m <= 12; m++) {
+        const option1 = document.createElement("option");
+        option1.value = m;
+        option1.textContent = monthName(m);
+        monthSelect.appendChild(option1);
+
+        const option2 = document.createElement("option");
+        option2.value = m;
+        option2.textContent = monthName(m);
+        itemStartMonthInput.appendChild(option2.cloneNode(true));
+        itemEndMonthInput.appendChild(option2.cloneNode(true));
+      }
+      const currentMonth = new Date().getMonth() + 1;
+      monthSelect.value = currentMonth;
+      itemStartMonthInput.value = currentMonth;
+      itemEndMonthInput.value = currentMonth;
+      currentMonthLabel.textContent = `Showing items in season for ${monthName(currentMonth)}.`;
+    }
+
+    function renderInSeasonList() {
+      const month = parseInt(monthSelect.value, 10);
+      const items = data.items.filter(i => isInSeason(month, i.startMonth, i.endMonth));
+      inSeasonList.innerHTML = "";
+      if (!items.length) {
+        inSeasonList.innerHTML = "<p class='muted'>No items marked as in season for this month yet.</p>";
+        return;
+      }
+      items.sort((a,b) => a.name.localeCompare(b.name));
+      items.forEach(item => {
+        const el = document.createElement("div");
+        el.style.marginBottom = "0.35rem";
+        const pillClass = item.category === "fruit" ? "fruit" : item.category === "veg" ? "veg" : "special";
+        el.innerHTML = `
+          <div>
+            <strong>${item.name}</strong>
+            <span class="pill ${pillClass}">${item.category}</span>
+          </div>
+          <div class="muted">
+            Season: ${monthName(item.startMonth)} – ${monthName(item.endMonth)}
+            ${item.notes ? `<br>${item.notes}` : ""}
+          </div>
+        `;
+        inSeasonList.appendChild(el);
+      });
+    }
+
+    function renderItemsTable() {
+      if (!data.items.length) {
+        itemsTableWrapper.innerHTML = "<p class='muted'>No items yet. Add your first fruit, veg, or special above.</p>";
+        return;
+      }
+      const rows = data.items
+        .slice()
+        .sort((a,b) => a.name.localeCompare(b.name))
+        .map(i => {
+          const pillClass = i.category === "fruit" ? "fruit" : i.category === "veg" ? "veg" : "special";
+          return `
+            <tr data-id="${i.id}">
+              <td>
+                <strong>${i.name}</strong>
+                <span class="pill ${pillClass}">${i.category}</span>
+              </td>
+              <td>${monthName(i.startMonth)} – ${monthName(i.endMonth)}</td>
+              <td>${i.notes ? i.notes : "<span class='muted'>–</span>"}</td>
+              <td><button class="btn sm secondary" data-action="editItem">Edit</button></td>
+            </tr>
+          `;
+        }).join("");
+      itemsTableWrapper.innerHTML = `
+        <table>
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th>Season</th>
+              <th>Notes</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+      `;
+      itemsTableWrapper.querySelectorAll("button[data-action='editItem']").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const tr = btn.closest("tr");
+          const id = tr.getAttribute("data-id");
+          const item = data.items.find(i => i.id === id);
+          if (!item) return;
+          editingItemId = item.id;
+          itemNameInput.value = item.name;
+          itemCategoryInput.value = item.category;
+          itemStartMonthInput.value = item.startMonth;
+          itemEndMonthInput.value = item.endMonth;
+          itemNotesInput.value = item.notes || "";
+        });
+      });
+    }
+
+    function renderItemOptionsForPurchases() {
+      purchaseItemSelect.innerHTML = "";
+      filterItemSelect.innerHTML = `<option value="">All items</option>`;
+      data.items
+        .slice()
+        .sort((a,b) => a.name.localeCompare(b.name))
+        .forEach(i => {
+          const opt1 = document.createElement("option");
+          opt1.value = i.id;
+          opt1.textContent = i.name;
+          purchaseItemSelect.appendChild(opt1);
+
+          const opt2 = document.createElement("option");
+          opt2.value = i.id;
+          opt2.textContent = i.name;
+          filterItemSelect.appendChild(opt2);
+        });
+    }
+
+    function renderStoreFilterOptions() {
+      const stores = Array.from(new Set(data.purchases.map(p => p.store))).sort();
+      filterStoreSelect.innerHTML = `<option value="">All stores</option>`;
+      stores.forEach(s => {
+        const opt = document.createElement("option");
+        opt.value = s;
+        opt.textContent = s;
+        filterStoreSelect.appendChild(opt);
+      });
+    }
+
+    function renderPurchasesTable() {
+      let purchases = data.purchases.slice().sort((a,b) => b.date.localeCompare(a.date));
+      const storeFilter = filterStoreSelect.value;
+      const itemFilter = filterItemSelect.value;
+      if (storeFilter) {
+        purchases = purchases.filter(p => p.store === storeFilter);
+      }
+      if (itemFilter) {
+        purchases = purchases.filter(p => p.itemId === itemFilter);
+      }
+
+      if (!purchases.length) {
+        purchasesTableWrapper.innerHTML = "<p class='muted'>No purchases logged yet for this filter.</p>";
+        return;
+      }
+
+      const rows = purchases.map(p => {
+        const item = data.items.find(i => i.id === p.itemId);
+        const itemName = item ? item.name : p.itemId;
+        const price = p.pricePerKg != null && p.pricePerKg !== ""
+          ? `$${Number(p.pricePerKg).toFixed(2)}`
+          : "<span class='muted'>–</span>";
+        const newSeasonBadge = p.newSeason
+          ? `<span class="pill new-season">New season</span>`
+          : "";
+        return `
+          <tr>
+            <td>${p.date}</td>
+            <td>${p.store}</td>
+            <td>${itemName} ${newSeasonBadge}</td>
+            <td>${p.freshness}/5</td>
+            <td>${price}</td>
+            <td>${p.notes ? p.notes : "<span class='muted'>–</span>"}</td>
+          </tr>
+        `;
+      }).join("");
+
+      purchasesTableWrapper.innerHTML = `
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Store</th>
+              <th>Item</th>
+              <th>Freshness</th>
+              <th>Price/kg</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+      `;
+    }
+
+    // Event listeners
+    monthSelect.addEventListener("change", () => {
+      const m = parseInt(monthSelect.value, 10);
+      currentMonthLabel.textContent = `Showing items in season for ${monthName(m)}.`;
+      renderInSeasonList();
+    });
+
+    useCurrentMonthBtn.addEventListener("click", () => {
+      const currentMonth = new Date().getMonth() + 1;
+      monthSelect.value = currentMonth;
+      currentMonthLabel.textContent = `Showing items in season for ${monthName(currentMonth)}.`;
+      renderInSeasonList();
+    });
+
+    itemForm.addEventListener("submit", e => {
+      e.preventDefault();
+      const name = itemNameInput.value.trim();
+      if (!name) return;
+
+      const category = itemCategoryInput.value;
+      const startMonth = parseInt(itemStartMonthInput.value, 10);
+      const endMonth = parseInt(itemEndMonthInput.value, 10);
+      const notes = itemNotesInput.value.trim();
+
+      if (editingItemId) {
+        const item = data.items.find(i => i.id === editingItemId);
+        if (item) {
+          item.name = name;
+          item.category = category;
+          item.startMonth = startMonth;
+          item.endMonth = endMonth;
+          item.notes = notes;
+        }
+      } else {
+        const id = name.toLowerCase().replace(/[^a-z0-9]+/g, "_") + "_" + Date.now().toString(36);
+        data.items.push({ id, name, category, startMonth, endMonth, notes });
+      }
+
+      saveData();
+      editingItemId = null;
+      itemForm.reset();
+      const currentMonth = new Date().getMonth() + 1;
+      itemStartMonthInput.value = currentMonth;
+      itemEndMonthInput.value = currentMonth;
+      renderItemsTable();
+      renderItemOptionsForPurchases();
+      renderInSeasonList();
+    });
+
+    resetItemFormBtn.addEventListener("click", () => {
+      editingItemId = null;
+      itemForm.reset();
+      const currentMonth = new Date().getMonth() + 1;
+      itemStartMonthInput.value = currentMonth;
+      itemEndMonthInput.value = currentMonth;
+    });
+
+    purchaseForm.addEventListener("submit", e => {
+      e.preventDefault();
+      const date = purchaseDateInput.value;
+      const store = purchaseStoreInput.value.trim();
+      const itemId = purchaseItemSelect.value;
+      if (!date || !store || !itemId) return;
+
+      const freshness = parseInt(purchaseFreshnessInput.value, 10);
+      const pricePerKg = purchasePriceInput.value !== "" ? Number(purchasePriceInput.value) : null;
+      const newSeason = purchaseNewSeasonInput.checked;
+      const notes = purchaseNotesInput.value.trim();
+
+      data.purchases.push({
+        id: "p_" + Date.now().toString(36),
+        date,
+        store,
+        itemId,
+        freshness,
+        pricePerKg,
+        newSeason,
+        notes
+      });
+      saveData();
+      purchaseForm.reset();
+      purchaseFreshnessInput.value = 4;
+      purchasePriceInput.value = "";
+      purchaseNewSeasonInput.checked = false;
+      renderStoreFilterOptions();
+      renderPurchasesTable();
+    });
+
+    filterStoreSelect.addEventListener("change", renderPurchasesTable);
+    filterItemSelect.addEventListener("change", renderPurchasesTable);
+
+    // Init date default
+    purchaseDateInput.valueAsNumber = Date.now() - (new Date().getTimezoneOffset() * 60000);
+
+    // Initialise
+    initMonthSelects();
+    renderItemsTable();
+    renderItemOptionsForPurchases();
+    renderStoreFilterOptions();
+    renderInSeasonList();
+    renderPurchasesTable();
+  </script>
+</body>
+</html>
