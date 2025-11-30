@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fresh & Fast</title>
-    <meta name="description" content="Track seasonal produce and plan your meals.">
     <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#2c3e50">
@@ -14,7 +16,7 @@
 
     <header>
         <h1>Fresh & Fast</h1>
-        <p>Your Personal Produce Tracker</p>
+        <p>Your Personal Meal Planning Assistant</p>
     </header>
 
     <main>
@@ -24,9 +26,8 @@
             <div class="filter-buttons">
                 <button class="filter-btn active" data-filter="all">All</button>
                 <button class="filter-btn" data-filter="seasonal">In Season</button>
-                <button class="filter-btn" data-filter="pantry">Pantry Staples</button>
+                <button class="filter-btn" data-filter="pantry">Pantry</button>
             </div>
-            <p><em>Adelaide Hills, Late Spring</em></p>
             <div id="produce-list" class="produce-list">
                 <!-- List will be populated by JavaScript -->
             </div>
@@ -34,38 +35,71 @@
 
         <!-- Screen 2: Store Log & Fridge -->
         <section id="screen2" class="screen">
-            <h2>Store Log & My Fridge</h2>
+            <h2>My Kitchen</h2>
             <div class="tabs">
                 <button id="storeLogTab" class="tab-button active">Store Log</button>
                 <button id="fridgeTab" class="tab-button">My Fridge</button>
             </div>
-            <div id="store-log-list" class="produce-list tab-content active">
-                 <!-- List will be populated by JavaScript -->
-            </div>
-            <div id="fridge-list" class="produce-list tab-content">
-                 <!-- List will be populated by JavaScript -->
-            </div>
+            <div id="store-log-list" class="produce-list tab-content active"></div>
+            <div id="fridge-list" class="produce-list tab-content"></div>
         </section>
 
-        <!-- Screen 3: Meal Planner -->
+        <!-- Screen 3: Generate Plan -->
         <section id="screen3" class="screen">
-            <h2>Meal Planner</h2>
-            <p>Copy the list below and paste it into our chat to get a custom meal plan!</p>
-            <div class="output-box">
-                <pre id="meal-plan-output">Go to the "My Fridge" tab and add some items first!</pre>
-                <button id="copy-button">Copy to Clipboard</button>
+            <h2>Generate Meal Plan</h2>
+            <div class="card">
+                <h3>Current Ingredients</h3>
+                <p id="fridge-ingredients-display">You haven't added anything to your fridge yet.</p>
+            </div>
+            <button id="generate-plan-btn" class="primary-btn">Generate 3-Day Plan</button>
+        </section>
+
+        <!-- Screen 4: My Meal Plan -->
+        <section id="screen4" class="screen">
+            <h2>My Meal Plan</h2>
+            <div id="plan-tabs" class="tabs">
+                <button class="plan-tab-button active" data-day="1">Day 1</button>
+                <button class="plan-tab-button" data-day="2">Day 2</button>
+                <button class="plan-tab-button" data-day="3">Day 3</button>
+            </div>
+            <div id="plan-content" class="plan-content">
+                <!-- Meal plan will be populated here -->
+                <p class="placeholder-text">Generate a plan to see it here!</p>
             </div>
         </section>
     </main>
 
     <nav>
-        <button class="nav-button active" data-screen="screen1">Produce</button>
-        <button class="nav-button" data-screen="screen2">Log & Fridge</button>
-        <button class="nav-button" data-screen="screen3">Meal Plan</button>
+        <button class="nav-button active" data-screen="screen1"><span class="nav-icon">🥬</span> Produce</button>
+        <button class="nav-button" data-screen="screen2"><span class="nav-icon">📝</span> Kitchen</button>
+        <button class="nav-button" data-screen="screen3"><span class="nav-icon">✨</span> Generate</button>
+        <button class="nav-button" data-screen="screen4"><span class="nav-icon">📅</span> My Plan</button>
     </nav>
 
+    <!-- Modals -->
+    <div id="generate-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h3>Powered by Your Personal AI Chef</h3>
+            <p>To create your custom plan, we'll use a powerful AI. Simply copy the text below and paste it into our chat.</p>
+            <div class="output-box">
+                <pre id="modal-output-text"></pre>
+                <button id="modal-copy-btn" class="primary-btn">Copy to Clipboard</button>
+            </div>
+            <p class="modal-subtext">After you get your plan, come back here and tap "View Plan" to see it beautifully organized.</p>
+        </div>
+    </div>
+
+    <div id="recipe-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h3 id="recipe-title"></h3>
+            <div id="recipe-body"></div>
+        </div>
+    </div>
+
     <footer>
-        <p id="install-prompt" style="display: none;">Install this app on your device for easy access!</p>
+        <p id="install-prompt" style="display: none;">Install this app for the best experience!</p>
     </footer>
 
     <script src="app.js"></script>
